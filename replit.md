@@ -15,6 +15,7 @@ This is an Instagram Influencer Analytics application that allows users to searc
   - Display posts and reels grids
   - Charts and engagement metrics
 - **Key Dependencies**: React, React Router, Axios, Chart.js, Tailwind CSS
+- **Design**: Modern dark mode theme with glassmorphism effects, gradient accents (indigo/purple/pink), and smooth animations
 
 ### Backend
 - **Framework**: Express.js (Node.js)
@@ -45,6 +46,8 @@ The backend requires the following environment variables (stored in `IGBackend/.
 - Updated frontend API configuration to use dynamic hostname for backend
 - Created Node.js .gitignore file
 - Set up workflows for both frontend and backend
+- Completely redesigned UI with modern dark mode theme while preserving all functionality
+- Implemented environment-aware API and image proxy URLs for production deployment
 
 ## Project Structure
 ```
