@@ -1,59 +1,85 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useCallback, useRef } from 'react'
 import { igAPI } from '../services/api'
 
-export const useInfluencerData = (id) => {
+export const useInfluencerData = (username) => {
   const [profile, setProfile] = useState(null)
-  const [posts, setPosts] = useState(null)
-  const [loading, setLoading] = useState(false)
+  const [media, setMedia] = useState({ posts: [], reels: [] })
+  const [loading, setLoading] = useState(true)
   const [error, setError] = useState(null)
+  const [pagination, setPagination] = useState({
+    next_max_id: null,
+    has_next_page: false,
+  })
+  const [loadingMore, setLoadingMore] = useState(false)
+  const hasFetched = useRef(false)
 
-  useEffect(() => {
-    if (!id) return
+  const fetchInitialData = useCallback(async () => {
+    if (!username || hasFetched.current) return
 
-    const fetchData = async () => {
-      setLoading(true)
-      setError(null)
-
-      try {
-        const [profileData, mediaData] = await Promise.all([
-          igAPI.getInfluencerProfile(id),
-          igAPI.getInfluencerMedia(id)
-        ])
-
-        setProfile(profileData)
-        setPosts(mediaData)
-      } catch (err) {
-        setError(err.message || 'Failed to fetch influencer data')
-      } finally {
-        setLoading(false)
-      }
-    }
-
-    fetchData()
-  }, [id])
-
-  const refetch = async () => {
-    if (!id) return
-
+    hasFetched.current = true
     setLoading(true)
     setError(null)
 
     try {
-      const [profileData, mediaData] = await Promise.all([
-        igAPI.getInfluencerProfile(id),
-        igAPI.getInfluencerMedia(id)
+      const [profileData, initialMediaData] = await Promise.all([
+        igAPI.getInfluencerProfile(username),
+        igAPI.getInfluencerMedia(username),
       ])
 
       setProfile(profileData)
-      setPosts(mediaData)
+      setMedia({
+        posts: initialMediaData.POSTS || [],
+        reels: initialMediaData.REELS || [],
+      })
+      setPagination({
+        next_max_id: initialMediaData.next_max_id,
+        has_next_page: initialMediaData.has_next_page,
+      })
     } catch (err) {
-      setError(err.message || 'Failed to fetch influencer data')
+      setError(err.message || 'Failed to fetch initial influencer data')
     } finally {
       setLoading(false)
     }
-  }
+  }, [username])
 
-  return { profile, posts, loading, error, refetch }
+  useEffect(() => {
+    fetchInitialData()
+  }, [fetchInitialData])
+
+  const fetchMoreMedia = useCallback(async () => {
+    if (!username || !pagination.has_next_page || loadingMore) return
+
+    setLoadingMore(true)
+    try {
+      const moreMediaData = await igAPI.getInfluencerMedia(
+        username,
+        pagination.next_max_id
+      )
+      setMedia((prevMedia) => ({
+        posts: [...prevMedia.posts, ...(moreMediaData.POSTS || [])],
+        reels: [...prevMedia.reels, ...(moreMediaData.REELS || [])],
+      }))
+      setPagination({
+        next_max_id: moreMediaData.next_max_id,
+        has_next_page: moreMediaData.has_next_page,
+      })
+    } catch (err) {
+      setError(err.message || 'Failed to fetch more media')
+    } finally {
+      setLoadingMore(false)
+    }
+  }, [username, pagination.has_next_page, pagination.next_max_id, loadingMore])
+
+  return {
+    profile,
+    media,
+    loading,
+    error,
+    pagination,
+    loadingMore,
+    fetchMoreMedia,
+    refetch: fetchInitialData,
+  }
 }
 
 export default useInfluencerData

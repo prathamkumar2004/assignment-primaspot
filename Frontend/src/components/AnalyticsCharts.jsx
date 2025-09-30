@@ -16,7 +16,7 @@ ChartJS.register(
   ArcElement
 )
 
-const AnalyticsCharts = ({ profile, posts }) => {
+const AnalyticsCharts = ({ profile, media }) => {
   if (!profile) return null
 
   // Prepare engagement comparison data
@@ -51,8 +51,8 @@ const AnalyticsCharts = ({ profile, posts }) => {
     datasets: [
       {
         data: [
-          posts?.POSTS?.length || 0,
-          posts?.REELS?.length || 0
+          media?.posts?.length || 0,
+          media?.reels?.length || 0
         ],
         backgroundColor: [
           'rgba(147, 51, 234, 0.8)',
@@ -69,9 +69,9 @@ const AnalyticsCharts = ({ profile, posts }) => {
 
   // Post performance data
   const postPerformanceData = (() => {
-    if (!posts?.POSTS?.length) return null
+    if (!media?.posts?.length) return null
 
-    const recentPosts = posts.POSTS.slice(0, 10)
+    const recentPosts = media.posts.slice(0, 10)
     return {
       labels: recentPosts.map((_, index) => `Post ${index + 1}`),
       datasets: [

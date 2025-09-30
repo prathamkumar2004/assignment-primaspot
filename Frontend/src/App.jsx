@@ -9,7 +9,7 @@ function App() {
       <Router>
         <Routes>
           <Route path="/" element={<SearchPage />} />
-          <Route path="/profile/:id" element={<ProfilePage />} />
+          <Route path="/profile/:username" element={<ProfilePage />} />
         </Routes>
       </Router>
     </div>

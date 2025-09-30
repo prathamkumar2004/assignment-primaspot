@@ -53,13 +53,10 @@ export const igAPI = {
   },
 
   // Get influencer profile data
-  getInfluencerProfile: async (id) => {
-    console.log('Fetching profile for id:', id)
-    
+  getInfluencerProfile: async (username) => {
+    console.log('Fetching profile for username:', username)
     try {
-      const response = await api.get('/profile', { 
-        params: { id } 
-      })
+      const response = await api.post('/api/profile', { username })
       console.log('Profile response received:', response.data)
       return response.data
     } catch (error) {
@@ -69,12 +66,17 @@ export const igAPI = {
   },
 
   // Get influencer posts and reels
-  getInfluencerMedia: async (id) => {
-    console.log('Fetching media for id:', id)
-    
+  getInfluencerMedia: async (username, nextMaxId) => {
+    console.log(
+      'Fetching media for username:',
+      username,
+      'with next_max_id:',
+      nextMaxId
+    )
     try {
-      const response = await api.get('/media', { 
-        params: { id } 
+      const response = await api.post('/api/media', {
+        username,
+        next_max_id: nextMaxId,
       })
       console.log('Media response received:', response.data)
       return response.data
@@ -82,7 +84,7 @@ export const igAPI = {
       console.error('Media API error:', error)
       throw error
     }
-  }
+  },
 }
 
 export default api

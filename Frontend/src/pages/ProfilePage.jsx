@@ -8,8 +8,16 @@ import ReelsGrid from '../components/ReelsGrid'
 import LoadingSpinner from '../components/LoadingSpinner'
 
 const ProfilePage = () => {
-  const { id } = useParams()
-  const { profile, posts, loading, error } = useInfluencerData(id)
+  const { username } = useParams()
+  const {
+    profile,
+    media,
+    loading,
+    error,
+    pagination,
+    loadingMore,
+    fetchMoreMedia,
+  } = useInfluencerData(username)
 
   if (loading) {
     return <LoadingSpinner />
@@ -75,7 +83,7 @@ const ProfilePage = () => {
           <ProfileHeader profile={profile} />
 
           {/* Analytics Charts */}
-          <AnalyticsCharts profile={profile} posts={posts} />
+          <AnalyticsCharts profile={profile} media={media} />
 
           {/* Posts and Reels Sections */}
           <div className="grid lg:grid-cols-2 gap-8">
@@ -85,7 +93,7 @@ const ProfilePage = () => {
                 <Heart className="h-6 w-6 mr-2 text-red-500" />
                 Recent Posts
               </h2>
-              <PostsGrid posts={posts?.POSTS || []} />
+              <PostsGrid posts={media?.posts || []} />
             </div>
 
             {/* Reels Grid */}
@@ -94,7 +102,7 @@ const ProfilePage = () => {
                 <Eye className="h-6 w-6 mr-2 text-purple-500" />
                 Recent Reels
               </h2>
-              <ReelsGrid reels={posts?.REELS || []} />
+              <ReelsGrid reels={media?.reels || []} />
             </div>
           </div>
         </div>

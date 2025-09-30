@@ -111,7 +111,7 @@ const SearchPage = () => {
                 {results.map((influencer) => (
                   <Link
                     key={influencer.id}
-                    to={`/profile/${influencer.id}`}
+                    to={`/profile/${influencer.screenName}`}
                     className="card hover:shadow-md transition-all duration-200 group"
                   >
                     <div className="flex items-start space-x-4">
