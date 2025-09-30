@@ -14,7 +14,7 @@ const app = express();
 // Environment variables
 const RAPIDAPI_KEY = process.env.RAPIDAPI_KEY;
 const RAPIDAPI_HOST = process.env.RAPIDAPI_HOST;
-const PORT = process.env.PORT || 5001;
+const PORT = process.env.PORT || 3001;
 
 // Check if required environment variables are present
 if (!RAPIDAPI_KEY || !RAPIDAPI_HOST) {
