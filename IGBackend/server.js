@@ -8,7 +8,7 @@ require('dotenv').config();
 // Import the search routes
 const searchRoutes = require('./routes/search.route.js');
 const profileRoutes = require('./routes/profile.route.js');
-
+const mediaRoutes = require('./routes/media.route.js');
 const app = express();
 
 // Environment variables
@@ -86,7 +86,7 @@ app.get('/health', (req, res) => {
 // Use the search routes
 app.use('/api', searchRoutes);
 app.use('/api', profileRoutes);
-
+app.use('/api', mediaRoutes);
 // ===== Other Endpoints (To be refactored later) =====
 
 // Influencer Profile
@@ -174,8 +174,8 @@ const server = app.listen(PORT, () => {
   console.log('📋 Available endpoints:');
   console.log('  GET  /health');
   console.log('  POST /api/search'); // Updated route
-  console.log('  GET  /profile?id=<id>');
-  console.log('  GET  /media?id=<id>');
+  console.log('  GET  /api/profile');
+  console.log('  GET  /api/media');
   console.log('  GET  /image-proxy?url=<encoded_image_url>');
   console.log('🚀 ================================');
 });
