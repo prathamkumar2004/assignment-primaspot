@@ -74,3 +74,15 @@ export const extractHashtags = (text) => {
 export const getPlaceholderImage = (width = 400, height = 400) => {
   return `https://via.placeholder.com/${width}x${height}/f0f0f0/666666?text=No+Image`
 }
+
+// Get API base URL (environment-aware)
+export const getApiBaseUrl = () => {
+  return import.meta.env.VITE_API_URL || 'http://localhost:3001'
+}
+
+// Get image proxy URL
+export const getImageProxyUrl = (imageUrl) => {
+  if (!imageUrl) return getPlaceholderImage()
+  const baseUrl = getApiBaseUrl()
+  return `${baseUrl}/image-proxy?url=${encodeURIComponent(imageUrl)}`
+}

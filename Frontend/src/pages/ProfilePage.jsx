@@ -1,5 +1,5 @@
 import { useParams, Link } from 'react-router-dom'
-import { ArrowLeft, Users, Heart, MessageCircle, Eye, Loader, AlertCircle, Instagram } from 'lucide-react'
+import { ArrowLeft, Users, Heart, MessageCircle, Eye, Loader, AlertCircle, Instagram, Sparkles } from 'lucide-react'
 import { useInfluencerData } from '../hooks/useInfluencerData'
 import ProfileHeader from '../components/ProfileHeader'
 import AnalyticsCharts from '../components/AnalyticsCharts'
@@ -25,11 +25,11 @@ const ProfilePage = () => {
 
   if (error) {
     return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
-        <div className="text-center">
-          <AlertCircle className="h-16 w-16 text-red-500 mx-auto mb-4" />
-          <h2 className="text-2xl font-bold text-gray-900 mb-2">Error Loading Profile</h2>
-          <p className="text-gray-600 mb-6">{error}</p>
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="text-center card max-w-md fade-in">
+          <AlertCircle className="h-16 w-16 text-red-400 mx-auto mb-4" />
+          <h2 className="text-2xl font-bold text-white mb-3">Error Loading Profile</h2>
+          <p className="text-slate-400 mb-8">{error}</p>
           <Link to="/" className="btn-primary">
             Back to Search
           </Link>
@@ -40,11 +40,11 @@ const ProfilePage = () => {
 
   if (!profile) {
     return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
-        <div className="text-center">
-          <Users className="h-16 w-16 text-gray-400 mx-auto mb-4" />
-          <h2 className="text-2xl font-bold text-gray-900 mb-2">Profile Not Found</h2>
-          <p className="text-gray-600 mb-6">The requested influencer profile could not be found.</p>
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="text-center card max-w-md fade-in">
+          <Users className="h-16 w-16 text-slate-600 mx-auto mb-4" />
+          <h2 className="text-2xl font-bold text-white mb-3">Profile Not Found</h2>
+          <p className="text-slate-400 mb-8">The requested influencer profile could not be found.</p>
           <Link to="/" className="btn-primary">
             Back to Search
           </Link>
@@ -54,22 +54,24 @@ const ProfilePage = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen">
       {/* Header Navigation */}
-      <header className="bg-white shadow-sm border-b sticky top-0 z-10">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
+      <header className="backdrop-blur-xl bg-slate-900/50 border-b border-slate-800 sticky top-0 z-50">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-5">
           <div className="flex items-center justify-between">
-            <div className="flex items-center space-x-4">
+            <div className="flex items-center space-x-6">
               <Link 
                 to="/" 
-                className="flex items-center space-x-2 text-gray-600 hover:text-gray-900 transition-colors"
+                className="flex items-center space-x-2 text-slate-400 hover:text-indigo-400 transition-colors group"
               >
-                <ArrowLeft className="h-5 w-5" />
-                <span>Back to Search</span>
+                <ArrowLeft className="h-5 w-5 group-hover:-translate-x-1 transition-transform" />
+                <span className="font-medium">Back to Search</span>
               </Link>
-              <div className="flex items-center space-x-2">
-                <Instagram className="h-6 w-6 text-purple-600" />
-                <span className="font-semibold text-gray-900">IG Analytics</span>
+              <div className="hidden sm:flex items-center space-x-2">
+                <Instagram className="h-6 w-6 text-indigo-400" />
+                <span className="font-bold text-transparent bg-clip-text bg-gradient-to-r from-indigo-400 to-purple-400">
+                  IG Analytics
+                </span>
               </div>
             </div>
           </div>
@@ -77,8 +79,8 @@ const ProfilePage = () => {
       </header>
 
       {/* Main Content */}
-      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <div className="space-y-8">
+      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
+        <div className="space-y-10 fade-in">
           {/* Profile Header */}
           <ProfileHeader profile={profile} />
 
@@ -86,22 +88,26 @@ const ProfilePage = () => {
           <AnalyticsCharts profile={profile} media={media} />
 
           {/* Posts and Reels Sections */}
-          <div className="grid lg:grid-cols-2 gap-8">
+          <div className="grid lg:grid-cols-2 gap-10">
             {/* Posts Grid */}
             <div>
-              <h2 className="text-2xl font-bold text-gray-900 mb-6 flex items-center">
-                <Heart className="h-6 w-6 mr-2 text-red-500" />
-                Recent Posts
-              </h2>
+              <div className="flex items-center space-x-3 mb-6">
+                <div className="p-2 bg-gradient-to-br from-red-500/20 to-pink-500/20 rounded-lg border border-red-500/30">
+                  <Heart className="h-6 w-6 text-red-400" />
+                </div>
+                <h2 className="text-2xl font-bold text-white">Recent Posts</h2>
+              </div>
               <PostsGrid posts={media?.posts || []} />
             </div>
 
             {/* Reels Grid */}
             <div>
-              <h2 className="text-2xl font-bold text-gray-900 mb-6 flex items-center">
-                <Eye className="h-6 w-6 mr-2 text-purple-500" />
-                Recent Reels
-              </h2>
+              <div className="flex items-center space-x-3 mb-6">
+                <div className="p-2 bg-gradient-to-br from-purple-500/20 to-indigo-500/20 rounded-lg border border-purple-500/30">
+                  <Eye className="h-6 w-6 text-purple-400" />
+                </div>
+                <h2 className="text-2xl font-bold text-white">Recent Reels</h2>
+              </div>
               <ReelsGrid reels={media?.reels || []} />
             </div>
           </div>

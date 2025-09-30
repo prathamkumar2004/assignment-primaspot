@@ -1,33 +1,33 @@
 import { useState } from 'react'
-import { Heart, MessageCircle, Eye, ExternalLink, Play, Video } from 'lucide-react'
-import { formatNumber, truncateText, generateGradient } from '../utils/helpers'
+import { Heart, MessageCircle, Eye, ExternalLink, Play, Video, X } from 'lucide-react'
+import { formatNumber, truncateText, generateGradient, getImageProxyUrl } from '../utils/helpers'
 
 const ReelCard = ({ reel, onClick }) => {
   const gradientClass = generateGradient()
 
   return (
     <div 
-      className="card cursor-pointer hover:shadow-lg transition-all duration-300 group"
+      className="card cursor-pointer hover:scale-105 transition-all duration-300 group"
       onClick={() => onClick && onClick(reel)}
     >
       {/* Reel Thumbnail */}
-      <div className="relative mb-4 aspect-[9/16] rounded-lg overflow-hidden bg-gray-100 max-h-80">
+      <div className="relative mb-4 aspect-[9/16] rounded-xl overflow-hidden bg-slate-950 max-h-80">
         <img
-        
-          src={`http://localhost:5001/image-proxy?url=${encodeURIComponent(reel.thumbnail)}`}
+          src={getImageProxyUrl(reel.thumbnail)}
           alt={reel.caption?.substring(0, 50) || 'Instagram Reel'}
           className="w-full h-full object-cover"
         />
         
         {/* Reel Badge */}
-        <div className="absolute top-2 left-2 bg-purple-600 text-white text-xs px-2 py-1 rounded">
-          REEL
+        <div className="absolute top-3 left-3 bg-gradient-to-r from-purple-600 to-pink-600 text-white text-xs font-bold px-3 py-1.5 rounded-lg backdrop-blur-xl shadow-lg flex items-center space-x-1">
+          <Play className="h-3 w-3 fill-current" />
+          <span>REEL</span>
         </div>
 
         {/* Play Button Overlay */}
-        <div className="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-30 transition-all duration-300 flex items-center justify-center">
-          <div className="bg-white bg-opacity-90 rounded-full p-3 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-            <ExternalLink className="h-6 w-6 text-gray-800" />
+        <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-transparent opacity-0 group-hover:opacity-100 transition-all duration-300 flex items-center justify-center">
+          <div className="bg-white/20 backdrop-blur-xl rounded-full p-5 transform scale-75 group-hover:scale-100 transition-transform">
+            <Play className="h-8 w-8 text-white fill-current" />
           </div>
         </div>
       </div>
@@ -36,7 +36,7 @@ const ReelCard = ({ reel, onClick }) => {
       <div className="space-y-3">
         {/* Caption */}
         {reel.caption && (
-          <p className="text-gray-700 text-sm leading-relaxed">
+          <p className="text-slate-300 text-sm leading-relaxed line-clamp-2">
             {truncateText(reel.caption, 100)}
           </p>
         )}
@@ -44,28 +44,28 @@ const ReelCard = ({ reel, onClick }) => {
         {/* Engagement Stats */}
         <div className="space-y-2">
           <div className="flex items-center justify-between text-sm">
-            <div className="flex items-center space-x-3">
-              <div className="flex items-center space-x-1 text-purple-600">
+            <div className="flex items-center space-x-4">
+              <div className="flex items-center space-x-1.5 text-purple-400 font-medium">
                 <Eye className="h-4 w-4" />
-                <span className="font-medium">{formatNumber(reel.views || 0)}</span>
+                <span>{formatNumber(reel.views || 0)}</span>
               </div>
-              <div className="flex items-center space-x-1 text-red-500">
-                <Heart className="h-4 w-4" />
-                <span className="font-medium">{formatNumber(reel.likes || 0)}</span>
+              <div className="flex items-center space-x-1.5 text-red-400 font-medium">
+                <Heart className="h-4 w-4 fill-current" />
+                <span>{formatNumber(reel.likes || 0)}</span>
               </div>
             </div>
           </div>
           
           <div className="flex items-center justify-between text-sm">
-            <div className="flex items-center space-x-1 text-blue-500">
+            <div className="flex items-center space-x-1.5 text-blue-400 font-medium">
               <MessageCircle className="h-4 w-4" />
-              <span className="font-medium">{formatNumber(reel.comments || 0)}</span>
+              <span>{formatNumber(reel.comments || 0)}</span>
             </div>
             
             {reel.interactions && (
-              <div className="text-gray-500">
-                <span className="text-xs">Total: </span>
-                <span className="font-medium">{formatNumber(reel.interactions)}</span>
+              <div className="text-slate-500 text-xs">
+                <span className="text-slate-600">Total: </span>
+                <span className="font-bold text-indigo-400">{formatNumber(reel.interactions)}</span>
               </div>
             )}
           </div>
@@ -77,10 +77,10 @@ const ReelCard = ({ reel, onClick }) => {
             href={reel.postUrl}
             target="_blank"
             rel="noopener noreferrer"
-            className="inline-flex items-center space-x-1 text-purple-600 hover:text-purple-800 text-sm transition-colors"
+            className="inline-flex items-center space-x-1.5 text-purple-400 hover:text-purple-300 text-sm transition-colors font-medium group/link"
             onClick={(e) => e.stopPropagation()}
           >
-            <ExternalLink className="h-3 w-3" />
+            <ExternalLink className="h-3.5 w-3.5 group-hover/link:translate-x-0.5 transition-transform" />
             <span>Watch on Instagram</span>
           </a>
         )}
@@ -94,73 +94,85 @@ const ReelModal = ({ reel, onClose }) => {
 
   return (
     <div 
-      className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4"
+      className="fixed inset-0 bg-black/80 backdrop-blur-sm flex items-center justify-center z-50 p-4 fade-in"
       onClick={onClose}
     >
       <div 
-        className="bg-white rounded-xl max-w-2xl w-full max-h-[90vh] overflow-y-auto"
+        className="card max-w-2xl w-full max-h-[90vh] overflow-y-auto"
         onClick={(e) => e.stopPropagation()}
       >
         <div className="p-6">
-          <div className="flex justify-between items-start mb-4">
-            <h3 className="text-xl font-bold text-gray-900">Reel Details</h3>
+          <div className="flex justify-between items-start mb-6">
+            <h3 className="text-2xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-pink-400">
+              Reel Details
+            </h3>
             <button 
               onClick={onClose}
-              className="text-gray-400 hover:text-gray-600 text-2xl"
+              className="text-slate-400 hover:text-white transition-colors p-2 hover:bg-slate-800 rounded-lg"
             >
-              ×
+              <X className="h-5 w-5" />
             </button>
           </div>
           
           {/* Reel Content */}
-          <div className="space-y-4">
+          <div className="space-y-6">
             {reel.caption && (
               <div>
-                <h4 className="font-semibold text-gray-900 mb-2">Caption:</h4>
-                <p className="text-gray-700 leading-relaxed">{reel.caption}</p>
+                <h4 className="font-bold text-white mb-3 text-lg">Caption:</h4>
+                <p className="text-slate-300 leading-relaxed bg-slate-900/50 p-4 rounded-xl border border-slate-800">
+                  {reel.caption}
+                </p>
               </div>
             )}
             
-            <div className="grid grid-cols-2 gap-4">
-              <div>
-                <h4 className="font-semibold text-gray-900 mb-2">Video Stats:</h4>
-                <div className="space-y-2">
+            <div className="grid grid-cols-2 gap-6">
+              <div className="bg-slate-900/50 p-5 rounded-xl border border-slate-800">
+                <h4 className="font-bold text-white mb-4 flex items-center">
+                  <Eye className="h-5 w-5 text-purple-400 mr-2" />
+                  Video Stats
+                </h4>
+                <div className="space-y-3">
                   <div className="flex justify-between">
-                    <span>Views:</span>
-                    <span className="font-medium">{formatNumber(reel.views || 0)}</span>
+                    <span className="text-slate-400">Views:</span>
+                    <span className="font-bold text-purple-400">{formatNumber(reel.views || 0)}</span>
                   </div>
                   <div className="flex justify-between">
-                    <span>Likes:</span>
-                    <span className="font-medium">{formatNumber(reel.likes || 0)}</span>
+                    <span className="text-slate-400">Likes:</span>
+                    <span className="font-bold text-red-400">{formatNumber(reel.likes || 0)}</span>
                   </div>
                   <div className="flex justify-between">
-                    <span>Comments:</span>
-                    <span className="font-medium">{formatNumber(reel.comments || 0)}</span>
+                    <span className="text-slate-400">Comments:</span>
+                    <span className="font-bold text-blue-400">{formatNumber(reel.comments || 0)}</span>
                   </div>
                   {reel.interactions && (
-                    <div className="flex justify-between">
-                      <span>Total Interactions:</span>
-                      <span className="font-medium">{formatNumber(reel.interactions)}</span>
+                    <div className="flex justify-between pt-2 border-t border-slate-800">
+                      <span className="text-slate-400">Total:</span>
+                      <span className="font-bold text-indigo-400">{formatNumber(reel.interactions)}</span>
                     </div>
                   )}
                 </div>
               </div>
               
-              <div>
-                <h4 className="font-semibold text-gray-900 mb-2">Reel Info:</h4>
-                <div className="space-y-2">
+              <div className="bg-slate-900/50 p-5 rounded-xl border border-slate-800">
+                <h4 className="font-bold text-white mb-4 flex items-center">
+                  <Play className="h-5 w-5 text-pink-400 mr-2" />
+                  Reel Info
+                </h4>
+                <div className="space-y-3">
                   <div className="flex justify-between">
-                    <span>Type:</span>
-                    <span className="font-medium">Reel</span>
+                    <span className="text-slate-400">Type:</span>
+                    <span className="font-medium text-pink-400">Reel</span>
                   </div>
                   <div className="flex justify-between">
-                    <span>Post ID:</span>
-                    <span className="font-mono text-xs">{reel.postId?.substring(0, 10)}...</span>
+                    <span className="text-slate-400">Post ID:</span>
+                    <span className="font-mono text-xs text-slate-500">
+                      {reel.postId?.substring(0, 10)}...
+                    </span>
                   </div>
                   {reel.views && reel.likes && (
-                    <div className="flex justify-between">
-                      <span>Engagement Rate:</span>
-                      <span className="font-medium">
+                    <div className="flex justify-between pt-2 border-t border-slate-800">
+                      <span className="text-slate-400">Engagement:</span>
+                      <span className="font-bold text-emerald-400">
                         {((reel.likes / reel.views) * 100).toFixed(1)}%
                       </span>
                     </div>
@@ -170,14 +182,14 @@ const ReelModal = ({ reel, onClose }) => {
             </div>
             
             {reel.postUrl && (
-              <div className="pt-4 border-t">
+              <div className="pt-4">
                 <a
                   href={reel.postUrl}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="btn-primary w-full flex items-center justify-center space-x-2"
                 >
-                  <Play className="h-4 w-4" />
+                  <Play className="h-4 w-4 fill-current" />
                   <span>Watch on Instagram</span>
                 </a>
               </div>
@@ -194,10 +206,14 @@ const ReelsGrid = ({ reels = [] }) => {
 
   if (reels.length === 0) {
     return (
-      <div className="card text-center py-12">
-        <Video className="h-16 w-16 text-gray-300 mx-auto mb-4" />
-        <h3 className="text-lg font-semibold text-gray-900 mb-2">No Reels Available</h3>
-        <p className="text-gray-600">This influencer hasn't shared any recent reels or the data is not available.</p>
+      <div className="card text-center py-16">
+        <div className="inline-flex items-center justify-center w-20 h-20 rounded-full bg-gradient-to-br from-slate-800 to-slate-900 mb-6 border border-slate-700">
+          <Video className="h-10 w-10 text-slate-600" />
+        </div>
+        <h3 className="text-xl font-bold text-white mb-2">No Reels Available</h3>
+        <p className="text-slate-400 max-w-sm mx-auto">
+          This influencer hasn't shared any recent reels or the data is not available.
+        </p>
       </div>
     )
   }

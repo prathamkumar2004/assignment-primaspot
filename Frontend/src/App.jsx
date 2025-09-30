@@ -5,13 +5,15 @@ import './App.css'
 
 function App() {
   return (
-    <div className="min-h-screen bg-gray-50">
-      <Router>
-        <Routes>
-          <Route path="/" element={<SearchPage />} />
-          <Route path="/profile/:username" element={<ProfilePage />} />
-        </Routes>
-      </Router>
+    <div className="dark">
+      <div className="min-h-screen bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950">
+        <Router>
+          <Routes>
+            <Route path="/" element={<SearchPage />} />
+            <Route path="/profile/:username" element={<ProfilePage />} />
+          </Routes>
+        </Router>
+      </div>
     </div>
   )
 }
