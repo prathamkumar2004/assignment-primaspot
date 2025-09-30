@@ -26,7 +26,11 @@ if (!RAPIDAPI_KEY || !RAPIDAPI_HOST) {
 }
 
 // Middleware
-app.use(helmet()); // Security headers
+app.use(
+  helmet({
+    crossOriginResourcePolicy: false,
+  })
+) // Security headers
 app.use(cors()); // Enable CORS for all routes
 app.use(morgan('combined')); // Logging
 app.use(express.json()); // Parse JSON bodies
@@ -96,27 +100,30 @@ app.use('/api', mediaRoutes);
 
 
 app.get('/image-proxy', async (req, res) => {
+  // Step 1: Get the Instagram URL from the query parameter
+  const imageUrl = req.query.url;
+
+  // Basic error checking
+  if (!imageUrl) {
+    return res.status(400).send('Error: Image URL parameter is missing.');
+  }
+
   try {
-    const { url } = req.query;
-    if (!url) {
-      return res.status(400).send('Image URL is required');
-    }
-
-    const decodedUrl = decodeURIComponent(url);
-    console.log(`🖼️  Proxying image from: ${decodedUrl}`);
-
-    const response = await axios({
-      method: 'get',
-      url: decodedUrl,
-      responseType: 'stream',
+    // Step 2: Ask Axios to download the image as raw binary data ('arraybuffer')
+    const imageResponse = await axios.get(imageUrl, {
+      responseType: 'arraybuffer' 
     });
 
-    res.setHeader('Content-Type', response.headers['content-type']);
-    response.data.pipe(res);
+    // Step 3: Tell the browser what type of image this is (e.g., image/jpeg)
+    // We copy this directly from the original Instagram response.
+    res.set('Content-Type', imageResponse.headers['content-type']);
+
+    // Send the raw image data back to the browser.
+    res.send(imageResponse.data);
 
   } catch (error) {
-    console.error(`❌ Image proxy error:`, error.message);
-    res.status(502).send('Failed to fetch image');
+    console.error("Error in image proxy:", error.message);
+    res.status(500).send('Error: Failed to fetch the image.');
   }
 });
 

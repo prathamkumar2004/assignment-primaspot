@@ -18,9 +18,12 @@ const PostCard = ({ post, onClick }) => {
             <ImageIcon className="h-12 w-12 text-white opacity-70" />
           </div>
         ) : (
-          <div className={`w-full h-full bg-gradient-to-br ${gradientClass} flex items-center justify-center`}>
-            <ImageIcon className="h-12 w-12 text-white opacity-70" />
-          </div>
+          <img
+            src={`http://localhost:5001/image-proxy?url=${encodeURIComponent(post.displayUrl)}`}
+            alt={post.caption?.substring(0, 50) || 'Instagram Post'}
+            className="w-full h-full object-cover"
+            onError={() => setImageError(true)}
+          />
         )}
         
         {/* Post Type Badge */}

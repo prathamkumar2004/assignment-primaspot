@@ -37,11 +37,11 @@ const ProfileHeader = ({ profile }) => {
         {/* Profile Image */}
         <div className="flex-shrink-0">
           <img
-            src={profile.image || '/api/placeholder/150/150'}
+            src={`http://localhost:5001/image-proxy?url=${encodeURIComponent(profile.image)}`}
             alt={profile.name}
             className="w-32 h-32 lg:w-40 lg:h-40 rounded-full object-cover mx-auto lg:mx-0 shadow-lg"
             onError={(e) => {
-              e.target.src = '/api/placeholder/150/150'
+              e.target.src = 'https://via.placeholder.com/150'
             }}
           />
         </div>

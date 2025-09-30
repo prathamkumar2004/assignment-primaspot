@@ -12,12 +12,12 @@ const ReelCard = ({ reel, onClick }) => {
     >
       {/* Reel Thumbnail */}
       <div className="relative mb-4 aspect-[9/16] rounded-lg overflow-hidden bg-gray-100 max-h-80">
-        <div className={`w-full h-full bg-gradient-to-br ${gradientClass} flex items-center justify-center`}>
-          <div className="text-center">
-            <Play className="h-16 w-16 text-white opacity-70 mx-auto mb-2" />
-            <Video className="h-8 w-8 text-white opacity-50 mx-auto" />
-          </div>
-        </div>
+        <img
+        
+          src={`http://localhost:5001/image-proxy?url=${encodeURIComponent(reel.thumbnail)}`}
+          alt={reel.caption?.substring(0, 50) || 'Instagram Reel'}
+          className="w-full h-full object-cover"
+        />
         
         {/* Reel Badge */}
         <div className="absolute top-2 left-2 bg-purple-600 text-white text-xs px-2 py-1 rounded">

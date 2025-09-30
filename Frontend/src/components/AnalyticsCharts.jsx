@@ -68,30 +68,53 @@ const AnalyticsCharts = ({ profile, media }) => {
   }
 
   // Post performance data
-  const postPerformanceData = (() => {
-    if (!media?.posts?.length) return null
+  const performanceData = (() => {
+    const allMedia = [
+      ...(media?.posts || []),
+      ...(media?.reels || []),
+    ].sort((a, b) => b.timestamp - a.timestamp)
 
-    const recentPosts = media.posts.slice(0, 10)
+    if (!allMedia.length) return null
+
+    const recentMedia = allMedia.slice(0, 12).reverse() // Oldest to newest for trend line
+
     return {
-      labels: recentPosts.map((_, index) => `Post ${index + 1}`),
+      labels: recentMedia.map((item) =>
+        new Date(item.timestamp * 1000).toLocaleDateString('en-US', {
+          month: 'short',
+          day: 'numeric',
+        })
+      ),
       datasets: [
         {
-          label: 'Likes',
-          data: recentPosts.map(post => post.likes || 0),
+          label: 'Post Likes',
+          data: recentMedia.map((item) =>
+            !item.isVideo ? item.likes : null
+          ),
           borderColor: 'rgba(239, 68, 68, 1)',
           backgroundColor: 'rgba(239, 68, 68, 0.1)',
           fill: true,
-          tension: 0.4
+          tension: 0.4,
+        },
+        {
+          label: 'Reel Views',
+          data: recentMedia.map((item) =>
+            item.isVideo ? item.viewCount : null
+          ),
+          borderColor: 'rgba(147, 51, 234, 1)',
+          backgroundColor: 'rgba(147, 51, 234, 0.1)',
+          fill: true,
+          tension: 0.4,
         },
         {
           label: 'Comments',
-          data: recentPosts.map(post => post.comments || 0),
+          data: recentMedia.map((item) => item.comments),
           borderColor: 'rgba(34, 197, 94, 1)',
           backgroundColor: 'rgba(34, 197, 94, 0.1)',
           fill: true,
-          tension: 0.4
-        }
-      ]
+          tension: 0.4,
+        },
+      ],
     }
   })()
 
@@ -211,15 +234,17 @@ const AnalyticsCharts = ({ profile, media }) => {
         </div>
       </div>
 
-      {/* Post Performance Trend */}
-      {postPerformanceData && (
+      {/* Media Performance Trend */}
+      {performanceData && (
         <div className="card">
           <div className="flex items-center space-x-2 mb-4">
             <TrendingUp className="h-5 w-5 text-blue-600" />
-            <h3 className="text-lg font-semibold text-gray-900">Recent Posts Performance</h3>
+            <h3 className="text-lg font-semibold text-gray-900">
+              Recent Media Performance
+            </h3>
           </div>
           <div className="h-80">
-            <Line data={postPerformanceData} options={chartOptions} />
+            <Line data={performanceData} options={chartOptions} />
           </div>
         </div>
       )}
